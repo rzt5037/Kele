@@ -1,18 +1,25 @@
 require 'httparty'
+require 'json'
 
 class Kele
   include HTTParty
   base_uri 'https://www.bloc.io/api/v1'
 
   def initialize(mail,pass)
-    auth = "email=" + mail + "&password=" + pass
-    headers = {:content_type => 'application/json'}
+    user_pass = "email=" + mail + "&password=" + pass
+    auth = self.class.post('/sessions?' + user_pass)
 
-    user_info = self.class.post('/sessions?' + auth)
-    if user_info.success?
-      p user_info["auth_token"]
+
+    if auth.success?
+      @auth_token = auth["auth_token"]
+      p "Successful entry."
     else
       p "Wrong information entered."
     end
+  end
+
+  def get_me
+    response = self.class.get('/users/me', headers: { "authorization" => @auth_token })
+    JSON.parse(response.body)
   end
 end
