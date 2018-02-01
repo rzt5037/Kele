@@ -8,6 +8,7 @@ class Kele
   base_uri 'https://www.bloc.io/api/v1'
 
   def initialize(mail,pass)
+    @user = mail
     user_pass = "email=" + mail + "&password=" + pass
     auth = self.class.post('/sessions?' + user_pass)
 
@@ -37,5 +38,22 @@ class Kele
 
   def checkpointer(checkpoint_id)
     get_checkpoint(checkpoint_id)
+  end
+
+  def get_messages(page = nil)
+    if page
+      response = self.class.get('/message_threads?page=' + page.to_s, headers: {"authorization" => @auth_token})
+    else
+      response = self.class.get('/message_threads', headers: {"authorization" => @auth_token})
+    end
+    JSON.parse(response.body)
+  end
+
+  def create_message(recipient,title,body,token_id = nil)
+    if token_id
+      response = self.class.post('/messages?sender=' + @user + '&recipient_id=' + recipient.to_s + '&token=' + token_id.to_s + '&subject=' + title + '&stripped-text=' + body, headers: {"authorization" => @auth_token})
+    else
+      response = self.class.post('/messages?sender=' + @user + '&recipient_id=' + recipient.to_s + '&subject=' + title + '&stripped-text=' + body, headers: {"authorization" => @auth_token})
+    end
   end
 end
