@@ -59,7 +59,7 @@ class Kele
     end
   end
 
-  def create_submission(checkpoint_id, assignment_branch, assignment_commit_link, comment, enrollment_id)
-    self.class.post('/messages?checkpoint_id=' + checkpoint_id.to_s + '&assignment_branch=' + assignment_branch + '&assignment_commit_link=' + assignment_commit_link + '&comment=' + comment + '&enrollment_id=' + enrollment_id.to_s, headers: {"content_type" => 'application/json',"authorization" => @auth_token})
+  def create_submission(assignment_branch, assignment_commit_link, checkpoint_id, comment, enrollment_id)
+    self.class.post('/checkpoint_submissions?assignment_branch=' + assignment_branch + '&assignment_commit_link=' + assignment_commit_link + '&checkpoint_id=' + checkpoint_id.to_s +  '&comment=' + comment + '&enrollment_id=' + enrollment_id.to_s, headers: {"content_type" => 'application/json',"authorization" => @auth_token})
   end
 end
